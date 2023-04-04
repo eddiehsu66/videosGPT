@@ -133,3 +133,7 @@ dmypy.json
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
 /.idea/videosGPT.iml
+/app/PrivacyDocument.py
+/.idea/dataSources.xml
+/.idea/other.xml
+/.idea/sqldialects.xml

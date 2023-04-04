@@ -2,10 +2,11 @@ import openai
 import tiktoken
 import numpy as np
 import json
+import PrivacyDocument
 
 class openapi():
     def __init__(self, session_id=None):
-        self.api_key = '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'
+        self.api_key = PrivacyDocument.api_key
         self.messages = []
         self.session_id = session_id
         self.systemcontent = ""
@@ -69,7 +70,7 @@ class openapi():
         return num_tokens
 
     # 定义一个函数，将文本切割成小块，并返回每个块的 embedding 向量
-    def get_text_embeddings(self, text, max_length=50) -> list:
+    def get_text_embeddings(self, text:str, max_length=50) -> list[list]:
         # 将文本切割成小块
         text_blocks = [text[i:i + max_length] for i in range(0, len(text), max_length)]
         embeddings = []
@@ -79,10 +80,7 @@ class openapi():
             response = openai.Embedding.create(input=block, model="text-embedding-ada-002")
             embeddings.append(response["data"][0]["embedding"])
         return embeddings
-    def embedding_example(self) ->  None:
-        # 定义一个文本字符串
-        text = "这是一段文本，需要进行编码。"
-
+    def get_embedding(self,text = "这是一段文本，需要进行编码。") ->  None:
         # 调用 get_text_embeddings 函数获取文本的 embedding 向量列表
         embeddings = self.get_text_embeddings(text)
 
@@ -90,10 +88,10 @@ class openapi():
         embedding_dict = {}
         for i, embedding in enumerate(embeddings):
             embedding_dict[i] = embedding
-        # 将 embedding_dict 字典保存到文件中
-        with open("embedding_dict.json", "w") as f:
+        # 将 embedding_dict 字典保存到json文件
+        with open("../datastorage/embedding_dict.json", "w") as f:
             json.dump(embedding_dict, f)
-        # 将 embeddings 列表保存到文件中
-        np.save("embeddings.npy", embeddings)
+        # 将 embeddings 列表保存为npy文件
+        np.save("../datastorage/embeddings.npy", embeddings)
 
 
