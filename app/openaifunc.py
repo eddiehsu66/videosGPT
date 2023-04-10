@@ -2,7 +2,8 @@ import openai
 import tiktoken
 import numpy as np
 import json
-import PrivacyDocument
+from app import PrivacyDocument
+
 
 class openapi():
     def __init__(self, session_id=None):
@@ -70,7 +71,7 @@ class openapi():
         return num_tokens
 
     # 定义一个函数，将文本切割成小块，并返回每个块的 embedding 向量
-    def get_text_embeddings(self, text:str, max_length=50) -> list[list]:
+    def get_text_embeddings(self, text: str, max_length=50) -> list[list]:
         # 将文本切割成小块
         text_blocks = [text[i:i + max_length] for i in range(0, len(text), max_length)]
         embeddings = []
@@ -80,7 +81,8 @@ class openapi():
             response = openai.Embedding.create(input=block, model="text-embedding-ada-002")
             embeddings.append(response["data"][0]["embedding"])
         return embeddings
-    def get_embedding(self,text = "这是一段文本，需要进行编码。") ->  None:
+
+    def get_embedding(self, text="这是一段文本，需要进行编码。") -> None:
         # 调用 get_text_embeddings 函数获取文本的 embedding 向量列表
         embeddings = self.get_text_embeddings(text)
 
@@ -94,4 +96,8 @@ class openapi():
         # 将 embeddings 列表保存为npy文件
         np.save("../datastorage/embeddings.npy", embeddings)
 
-
+    def whisper_api(self):
+        audio_file = open("../datastorage/videos1.mp3", "rb")
+        openai.api_key = self.api_key
+        transcript = openai.Audio.transcribe("whisper-1", audio_file)
+        return transcript["text"]
